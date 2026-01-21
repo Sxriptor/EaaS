@@ -1,0 +1,23 @@
+[build]
+  publish = "."
+  command = "echo 'No build needed - static site'"
+
+[[redirects]]
+  from = "/api"
+  to = "/.netlify/functions/index"
+  status = 200
+
+[[redirects]]
+  from = "/corporate"
+  to = "/.netlify/functions/corporate"
+  status = 200
+
+[[redirects]]
+  from = "/funny"
+  to = "/.netlify/functions/funny"
+  status = 200
+
+[[redirects]]
+  from = "/sarcastic"
+  to = "/.netlify/functions/sarcastic"
+  status = 200

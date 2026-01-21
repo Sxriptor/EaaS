@@ -1,9 +1,36 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const net = require('net');
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+let PORT = process.env.PORT || 3000;
+const PORT_SPECIFIED = !!process.env.PORT;
+
+// Function to check if port is available
+function isPortAvailable(port) {
+  return new Promise((resolve) => {
+    const server = net.createServer();
+    server.listen(port, (err) => {
+      if (err) {
+        resolve(false);
+      } else {
+        server.once('close', () => resolve(true));
+        server.close();
+      }
+    });
+    server.on('error', () => resolve(false));
+  });
+}
+
+// Function to find next available port
+async function findAvailablePort(startPort) {
+  let port = startPort;
+  while (!(await isPortAvailable(port))) {
+    port++;
+  }
+  return port;
+}
 
 // Load response data
 let responses = {};
@@ -56,7 +83,12 @@ app.use(express.static('.'));
 
 // Route handlers
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'index.html'));
+  const response = getRandomResponse('default');
+  const time = calculateDevelopmentTime();
+  res.json({
+    message: response,
+    developmentTime: `In development for ${time.days} days, ${time.hours} hours.`
+  });
 });
 
 app.get('/corporate', (req, res) => {
@@ -86,24 +118,25 @@ app.get('/sarcastic', (req, res) => {
   });
 });
 
-app.get('/default', (req, res) => {
-  const response = getRandomResponse('default');
-  const time = calculateDevelopmentTime();
-  res.json({
-    message: response,
-    developmentTime: `In development for ${time.days} days, ${time.hours} hours.`
-  });
-});
+// Start server with port checking
+async function startServer() {
+  // If PORT was explicitly set, use it as-is, otherwise find available port
+  if (!PORT_SPECIFIED) {
+    PORT = await findAvailablePort(PORT);
+  }
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Eventually-as-a-Service running on port ${PORT}`);
-  console.log('Available at:');
-  console.log(`  http://localhost:${PORT}/`);
-  console.log(`  http://0.0.0.0:${PORT}/`);
-  console.log('Available endpoints:');
-  console.log(`  /corporate - Corporate responses`);
-  console.log(`  /funny - Humorous responses`);
-  console.log(`  /sarcastic - Sarcastic responses`);
-  console.log(`  /default - Default responses`);
-  console.log('Press Ctrl+C to stop');
-});
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Eventually-as-a-Service running on port ${PORT}`);
+    console.log('Available at:');
+    console.log(`  http://localhost:${PORT}/`);
+    console.log(`  http://0.0.0.0:${PORT}/`);
+    console.log('Available endpoints:');
+    console.log(`  / - Default responses`);
+    console.log(`  /corporate - Corporate responses`);
+    console.log(`  /funny - Humorous responses`);
+    console.log(`  /sarcastic - Sarcastic responses`);
+    console.log('Press Ctrl+C to stop');
+  });
+}
+
+startServer();
