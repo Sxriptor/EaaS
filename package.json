@@ -1,0 +1,16 @@
+{
+  "name": "eventually-as-a-service",
+  "version": "1.0.0",
+  "description": "A deliberately minimal web service that does almost nothing",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "keywords": ["eventually", "service", "minimal", "joke"],
+  "author": "",
+  "license": "MIT"
+}

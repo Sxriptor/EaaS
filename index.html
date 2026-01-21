@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Eventually as a Service</title>
+  <style>
+    body {
+      background: #0f0f0f;
+      color: #eaeaea;
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .box {
+      text-align: center;
+    }
+    button {
+      background: #1f1f1f;
+      color: #fff;
+      border: 1px solid #333;
+      padding: 14px 24px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .result {
+      margin-top: 20px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <button id="btn">This will exist eventually.</button>
+    <div class="result" id="result"></div>
+  </div>
+
+  <script>
+    const START_DATE = new Date("2016-04-01T00:00:00Z");
+
+    document.getElementById("btn").onclick = () => {
+      const now = new Date();
+      const diff = now - START_DATE;
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+
+      const result = document.getElementById("result");
+      result.innerHTML = `
+        <div>Still not yet.</div>
+        <div style="opacity:.6;margin-top:6px;">
+          In development for ${days} days, ${hours} hours.
+        </div>
+      `;
+      result.style.display = "block";
+    };
+  </script>
+</body>
+</html>
