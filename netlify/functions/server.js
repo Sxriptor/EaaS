@@ -1,5 +1,6 @@
 const serverless = require('serverless-http');
 const express = require('express');
+const path = require('path');
 
 const app = express();
 
@@ -109,6 +110,148 @@ function calculateDevelopmentTime() {
   return { days, hours };
 }
 
+// Documentation HTML content
+const documentationHTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Eventually-as-a-Service Documentation</title>
+  <style>
+    body {
+      background: #0f0f0f;
+      color: #eaeaea;
+      font-family: system-ui, -apple-system, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    .container {
+      text-align: center;
+      max-width: 600px;
+    }
+    h1 {
+      font-size: 2.5em;
+      margin-bottom: 10px;
+    }
+    .subtitle {
+      color: #888;
+      margin-bottom: 40px;
+    }
+    .endpoint {
+      background: #1a1a1a;
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 15px 0;
+      text-align: left;
+    }
+    .endpoint h3 {
+      margin: 0 0 10px 0;
+      color: #fff;
+    }
+    .endpoint code {
+      background: #333;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: 'Courier New', monospace;
+    }
+    .endpoint p {
+      margin: 5px 0;
+      color: #ccc;
+    }
+    .try-button {
+      background: #333;
+      color: #fff;
+      border: 1px solid #555;
+      padding: 8px 16px;
+      cursor: pointer;
+      border-radius: 4px;
+      margin-top: 10px;
+    }
+    .try-button:hover {
+      background: #444;
+    }
+    .response {
+      background: #2a2a2a;
+      border-left: 3px solid #666;
+      padding: 10px;
+      margin-top: 10px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      display: none;
+    }
+    .footer {
+      margin-top: 40px;
+      color: #666;
+      font-size: 14px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Eventually-as-a-Service</h1>
+    <p class="subtitle">Deliberately minimal API for professional procrastination</p>
+    
+    <div class="endpoint">
+      <h3>GET <code>/</code></h3>
+      <p>Default responses - dry and to the point</p>
+      <button class="try-button" onclick="tryEndpoint('/')">Try it</button>
+      <div class="response" id="response-default"></div>
+    </div>
+
+    <div class="endpoint">
+      <h3>GET <code>/corporate</code></h3>
+      <p>Corporate buzzword responses for enterprise delays</p>
+      <button class="try-button" onclick="tryEndpoint('/corporate')">Try it</button>
+      <div class="response" id="response-corporate"></div>
+    </div>
+
+    <div class="endpoint">
+      <h3>GET <code>/funny</code></h3>
+      <p>Humorous excuses for creative procrastination</p>
+      <button class="try-button" onclick="tryEndpoint('/funny')">Try it</button>
+      <div class="response" id="response-funny"></div>
+    </div>
+
+    <div class="endpoint">
+      <h3>GET <code>/sarcastic</code></h3>
+      <p>Sarcastic responses for when patience runs thin</p>
+      <button class="try-button" onclick="tryEndpoint('/sarcastic')">Try it</button>
+      <div class="response" id="response-sarcastic"></div>
+    </div>
+
+    <div class="footer">
+      <p>In development since April 1, 2016</p>
+      <p>API: <a href="/" style="color: #888;">https://e-ass.netlify.app/</a></p>
+    </div>
+  </div>
+
+  <script>
+    async function tryEndpoint(path) {
+      const responseId = 'response-' + (path === '/' ? 'default' : path.substring(1));
+      const responseDiv = document.getElementById(responseId);
+      
+      try {
+        responseDiv.style.display = 'block';
+        responseDiv.textContent = 'Loading...';
+        
+        const response = await fetch(path);
+        const data = await response.text();
+        
+        responseDiv.textContent = data;
+      } catch (error) {
+        responseDiv.textContent = 'Error: ' + error.message;
+      }
+    }
+  </script>
+</body>
+</html>`;
+
 // Route handlers
 app.get('/', (req, res) => {
   const response = getRandomResponse('default');
@@ -132,6 +275,10 @@ app.get('/sarcastic', (req, res) => {
   const response = getRandomResponse('sarcastic');
   const time = calculateDevelopmentTime();
   res.send(`${response}\n\nIn development for ${time.days} days, ${time.hours} hours.`);
+});
+
+app.get('/documentation', (req, res) => {
+  res.send(documentationHTML);
 });
 
 module.exports.handler = serverless(app);
