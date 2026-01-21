@@ -5,10 +5,12 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "node server.js"
+    "dev": "node server.js",
+    "build": "mkdir -p dist && cp -r *.json *.html dist/"
   },
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "serverless-http": "^3.2.0"
   },
   "keywords": ["eventually", "service", "minimal", "joke"],
   "author": "",
