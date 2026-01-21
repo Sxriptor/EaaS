@@ -78,45 +78,33 @@ function calculateDevelopmentTime() {
 // Load responses on startup
 loadResponses();
 
-// Serve static files
-app.use(express.static('.'));
-
-// Route handlers
+// Route handlers (API routes first)
 app.get('/', (req, res) => {
   const response = getRandomResponse('default');
   const time = calculateDevelopmentTime();
-  res.json({
-    message: response,
-    developmentTime: `In development for ${time.days} days, ${time.hours} hours.`
-  });
+  res.send(`${response}\n\nIn development for ${time.days} days, ${time.hours} hours.`);
 });
 
 app.get('/corporate', (req, res) => {
   const response = getRandomResponse('corporate');
   const time = calculateDevelopmentTime();
-  res.json({
-    message: response,
-    developmentTime: `In development for ${time.days} days, ${time.hours} hours.`
-  });
+  res.send(`${response}\n\nIn development for ${time.days} days, ${time.hours} hours.`);
 });
 
 app.get('/funny', (req, res) => {
   const response = getRandomResponse('funny');
   const time = calculateDevelopmentTime();
-  res.json({
-    message: response,
-    developmentTime: `In development for ${time.days} days, ${time.hours} hours.`
-  });
+  res.send(`${response}\n\nIn development for ${time.days} days, ${time.hours} hours.`);
 });
 
 app.get('/sarcastic', (req, res) => {
   const response = getRandomResponse('sarcastic');
   const time = calculateDevelopmentTime();
-  res.json({
-    message: response,
-    developmentTime: `In development for ${time.days} days, ${time.hours} hours.`
-  });
+  res.send(`${response}\n\nIn development for ${time.days} days, ${time.hours} hours.`);
 });
+
+// Serve static files after API routes
+app.use(express.static('.'));
 
 // Start server with port checking
 async function startServer() {
